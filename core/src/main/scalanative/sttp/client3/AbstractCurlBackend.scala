@@ -33,7 +33,7 @@ abstract class AbstractCurlBackend[F[_]](monad: MonadError[F], verbose: Boolean)
 
   override def send[T, R >: PE](request: Request[T, R]): F[Response[T]] =
     adjustExceptions(request) {
-      unsafe.Zone { implicit z =>
+      NativeHelper.withZone { implicit z =>
         val curl = CurlApi.init
         if (verbose) {
           curl.option(Verbose, parameter = true)
